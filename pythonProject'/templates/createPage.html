@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+ <head>
+   
+  <title>Create Page</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>    
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" />
+
+
+
+
+ </head>
+
+
+ <body style = "background: #d9d1ce; color: black">
+  <br /><br />
+  <div class="container" style="width:900px;">
+   <h2 align="center">Welcome!</h2>
+   <br /><br />
+
+
+   <div class="row">
+    <div class="col-md-6">
+     <h3 align="center"><u>Enter the Template Structure</u></h3>
+     <br />
+     <form method="post" id="treeview_form" action = >
+
+        <div class="form-group">
+            <label>Enter Template Name</label>
+            <input type="text" name="category_name" id="template_name" value="{{mystring}}" class="form-control" readonly="readonly">       
+           </div>
+
+      <div class="form-group">
+
+       <label>Select Directory</label>
+       <select name="parent_category" id="select_directory" class="form-control">
+       </select>
+      </div>
+
+
+      <div class="form-group">
+       <label>Enter Directory Name</label>
+       <input type="text" name="category_name" id="Directory_name" class="form-control">
+       <label>Enter File Name</label>
+       <input type="text" name="file_name" id="file_name" class="form-control">
+      </div>
+
+
+      <div class="form-group">
+       <input type="submit" name="action" id="action" value="Add To Template" class="btn btn-info" />
+      </div>
+
+      <div class="form-group">
+       <input type="submit" name="action_repo" id="action_repo" value="Create Repo" class="btn btn-info"/>
+      </div>
+
+
+
+
+
+
+     </form>
+    </div>
+    <div class="col-md-6">
+     <h3 align="center"><u>Template Structure</u></h3>
+     <br />
+     <div id="treeview" style="margin-left: 80px;"></div>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
+<script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.0/firebase-database.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.8/jstree.min.js"></script>
+
+<script>
+var lst = [];
+
+var firebaseConfig = {
+    apiKey: "AIzaSyAvbcA36dCFDGs8r8OpvdfLVl-Unh9CCT4",
+    authDomain: "commuteapp-90b42.firebaseapp.com",
+    databaseURL: "https://commuteapp-90b42.firebaseio.com",
+    projectId: "commuteapp-90b42",
+    storageBucket: "commuteapp-90b42.appspot.com",
+    messagingSenderId: "159775746050",
+    appId: "1:159775746050:web:6eccfebe6a3d0be5"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  var db = firebase.database().ref();
+
+
+ $(document).ready(function(){
+
+  // fill_parent_category();
+
+   fill_treeview();
+  
+  function fill_treeview()
+  {
+
+    var template_name = document.getElementById('template_name').value;
+  firebase.database().ref('/' + document.getElementById('template_name').value).once('value').then(function(snapshot) {
+  var string = JSON.stringify(snapshot.val());
+  var data = JSON.parse(string);
+  console.log(string);
+  author = snapshot.val();
+  var lst = [];
+var node_det = {};
+node_det["id"] =  template_name;
+        node_det["parent"] = "#";
+        node_det["text"] = template_name;
+        lst.push(node_det);
+for(var k in author) {
+
+    if(author[k] instanceof Object) {
+        node_det = {};
+        node_det["id"] = template_name + "/" + k;
+        node_det["parent"] = template_name;
+        node_det["text"] = k;
+        lst.push(node_det);
+        console.log("function called")
+        myfunction(template_name + "/" + k,author[k]);
+    }
+    else {            
+        node_det = {};                                                    
+        node_det["id"] = template_name + "/" + author[k];
+        node_det["parent"] = template_name;
+        node_det["text"] = author[k];
+        lst.push(node_det);
+    }
+//     $.jstree.defaults.core
+//   $('#treeview').jstree({ 'core' : {                                                       
+//     'data' :  lst
+    
+// } });
+}
+
+function myfunction(k,author)
+{
+    for(var test in author){
+        if(author[test] instanceof Object) {
+            node_det = {};
+            node_det["id"] = k + "/" + test;
+            node_det["parent"] = k;
+            node_det["text"] = test;
+            lst.push(node_det);
+            myfunction(test,author[test]);
+        }
+        else{
+            node_det = {};
+            node_det["id"] = author[test];
+            node_det["parent"] = k;
+            node_det["text"] = author[test];
+            lst.push(node_det);
+        }
+
+    }
+   
+}
+
+console.log(lst);
+javatree(lst);
+  
+});
+     
+   // $.ajax({
+   //  url:"http://pra.serveo.net/retrieve",
+   //  dataType:"text/plain",
+
+   //  success:function(data){
+   //    alert(data)
+   //    consol.log("success"+data)
+   //   $('#treeview').treeview({
+   //    data:data
+   //   });
+   //  }
+   // })
+  }
+
+  function javatree(lst){
+    console.log("Inside",lst);
+    $('#treeview').jstree("refresh");
+    $.jstree.defaults.core
+  $('#treeview').jstree({ 'core' : {                                                       
+    'data' :  lst
+    
+} });
+  }
+
+  function fill_parent_category()
+  {
+   // $.ajax({
+   //  url:'fill_parent_category.php',
+   //  success:function(data){
+   //   $('#parent_category').html(data);
+   //  }
+   // });
+   
+  }
+  $('#treeview_form').on('submit', function(event){
+    
+    var template_name = document.getElementById('template_name').value;
+
+
+    var select_directory = document.getElementById('select_directory').value;
+    
+    
+
+    var directory_name = document.getElementById('Directory_name').value;
+    var file_name = document.getElementById('file_name').value;
+    var file_name_without_dot = file_name.replace(".", "_");
+
+  var json_data;
+  var root_directories;
+  // if (file_name==''){
+  //   alert("file name cannot be empty");
+  // }
+  var fN = document.getElementById('file_name').value;
+  var d = fN.split(".");
+  console.log(d[0])
+ if (select_directory == '' && directory_name == '' ){
+    json_data = template_name+'/'+file_name_without_dot;
+    root_directories = template_name;
+  }
+  else if (select_directory == ''){
+    json_data = template_name+ '/'+directory_name+'/'+file_name_without_dot;
+    root_directories = template_name+ '/'+directory_name;
+  }
+  else if (directory_name == ''){
+    json_data = select_directory+'/'+file_name_without_dot;
+    root_directories = select_directory;
+  }
+  else if (directory_name !='' && select_directory != ''){
+    json_data = select_directory+'/'+directory_name+ '/'+file_name_without_dot;
+    root_directories = select_directory+'/'+directory_name;
+  } 
+  
+
+
+  var i;
+  var ddlArray= new Array();
+  var ddl = document.getElementById('select_directory');
+  for (i = 0; i < ddl.options.length; i++) {
+     ddlArray[i] = ddl .options[i].value;
+  }
+  if (root_directories != ddlArray){
+    select = document.getElementById("select_directory");
+    select.options[select.options.length] = new Option(root_directories, root_directories, false, false);
+  }
+  if (template_name != ddlArray){
+     select = document.getElementById("select_directory");
+    select.options[select.options.length] = new Option(template_name, template_name, false, false); 
+  }
+  
+   event.preventDefault();
+
+   db.child(json_data).set(file_name).then(function(){
+    // alert(json_data);
+    fill_treeview();
+   });
+   // $.ajax({
+   //  url:"http://127.0.0.1:5000/",
+   //  method:"POST",
+   //  data:json_data,
+   //  contentType: "text/plain",
+   //  success:function(data){
+   //    //alert($(this).serialize())
+   //   // fill_treeview();
+   //   // fill_parent_category();
+   //   $('#treeview_form')[0].reset();
+   //    alert(data);
+   //  }
+   // })
+  });
+ });
+</script>

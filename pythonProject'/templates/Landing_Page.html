@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Auto Data</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link href="{{url_for('static', filename = 'styles/Proj1.css')}}" rel="stylesheet" type="text/css">
+		<style>
+			body{
+				background-image: url("{{url_for('static', filename = 'LandingPage.jpg')}}");
+				background-size: cover;
+				color: white;
+			}
+		</style>
+	</head>	
+<body background="{{url_for('static', filename = 'LandingPage.jpg')}}"> 
+	<div class="One">
+		<h1 style=" font-size: 60px;">Welcome!</h1>
+	</div>
+  	<div class="container">
+  		<div class ="Two"style="width:500px; height:500px; padding: 30px; display: inline-block;">
+	  		<a href="{{url_for('createRepo')}}">
+	  			<div class="Four">
+		  			<img src="{{url_for('static', filename = 'CreateF.jpg')}}" alt="Create" class="image1">
+		  			<div class="middle1">
+		  				<div class="text">Create</div>
+		  			</div>
+		  		</div>
+			</a>
+		</div>
+		<div class="Three" style="width:500px; height:500px; padding: 30px; display: inline-block;">
+			<a href="#">
+				<div class="Five">
+		  			<img src="{{url_for('static', filename = 'ModifyF.jpg')}}" alt="Customize" class="image2">
+		  			<div class="middle2">
+		  				<div class="text">Customize</div>
+		  			</div>
+		  		</div>
+			</a>
+		</div>
+	</div>
+</body>
+</html
